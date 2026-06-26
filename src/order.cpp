@@ -1,7 +1,7 @@
 #include "Order.hpp"
 
 Order::Order(int id, Side side, int quantity, double price)
-    : id(id), side(side), quantity(quantity), price(price)
+    : id(id), side(side), quantity(quantity), priceTicks(price)
 {
 }
 
@@ -20,7 +20,7 @@ int Order::getQuantity() const
     return quantity;
 }
 
-double Order::getPrice() const
+long Order::getPriceTicks() const
 {
-    return price;
+    return priceTicks;
 }
