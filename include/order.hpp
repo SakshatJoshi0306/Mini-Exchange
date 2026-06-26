@@ -13,15 +13,15 @@ private:
     int id;
     Side side;
     int quantity;
-    double price;
+    long priceTicks; //1 price_ is 1 cent, so now we dont have to worry about floating decimals, only dealing with long ints
 
 public:
-    Order(int id, Side side, int quantity, double price); //Called a Constructor: when i crate an object i dont need to call anything, i can directly use the constructor type Order
+    Order(int id, Side side, int quantity, long priceTicks); //Called a Constructor: when i crate an object i dont need to call anything, i can directly use the constructor type Order
 
     int getId() const;
     Side getSide() const;
     int getQuantity() const;
-    double getPrice() const; // all 4 functions are getter functions, simply returns specific information of an Order type object
+    long getPriceTicks() const; // all 4 functions are getter functions, simply returns specific information of an Order type object
 };
 
 #endif

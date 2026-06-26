@@ -33,6 +33,7 @@ add_library(TradingEngineLib
 
     src/Order.cpp
     src/OrderBook.cpp
+    src/PriceLevel.cpp
 
 )
 

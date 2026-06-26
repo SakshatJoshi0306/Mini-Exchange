@@ -1,6 +1,6 @@
 #include "PriceLevel.hpp"
 
-    PriceLevel::PriceLevel(long priceTicks) : price_(priceTicks)
+    PriceLevel::PriceLevel(long priceTicks) : priceTicks(priceTicks)
     {
     }
 
@@ -9,9 +9,9 @@
         return orders_.empty();
     }
 
-    long PriceLevel::getPrice() const
+    long PriceLevel::getPriceTicks() const
     {
-        return price_;
+        return priceTicks;
     }
 
     size_t PriceLevel::numberOfOrders() const

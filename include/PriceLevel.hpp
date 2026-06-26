@@ -10,7 +10,7 @@ public:
 
     explicit PriceLevel(long price_);
 
-    long getPrice() const;
+    long getPriceTicks() const;
 
     void addOrder(const Order& order);
 
@@ -26,7 +26,7 @@ public:
 
 private:
 
-    long price_;
+    long priceTicks;
 
     std::deque<Order> orders_;
 };

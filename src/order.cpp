@@ -1,7 +1,7 @@
 #include "Order.hpp"
 
-Order::Order(int id, Side side, int quantity, double price)
-    : id(id), side(side), quantity(quantity), priceTicks(price)
+Order::Order(int id, Side side, int quantity, long priceTicks)
+    : id(id), side(side), quantity(quantity), priceTicks(priceTicks) // called an initialiser list
 {
 }
 
