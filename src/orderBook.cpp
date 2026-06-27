@@ -107,3 +107,39 @@ void OrderBook::printBook() const
 
     std::cout << "==============================\n";
 }
+bool OrderBook::hasBids() const
+{
+    return !bidBook_.empty();
+}
+
+bool OrderBook::hasAsks() const
+{
+    return !askBook_.empty();
+}
+
+PriceLevel& OrderBook::bestAsk()
+{
+    // begin() always points to the lowest ask because
+    // askBook_ is sorted in ascending order.
+    return askBook_.begin()->second;
+}
+
+PriceLevel& OrderBook::bestBid()
+{
+    // begin() always points to the highest bid because
+    // bidBook_ uses std::greater<long>.
+    return bidBook_.begin()->second;
+}
+
+void OrderBook::removeBestAskLevel()
+{
+    // erase(begin()) removes the lowest ask level.
+    // We call this only after its queue becomes empty.
+    askBook_.erase(askBook_.begin());
+}
+
+void OrderBook::removeBestBidLevel()
+{
+    // Same logic for bids.
+    bidBook_.erase(bidBook_.begin());
+}

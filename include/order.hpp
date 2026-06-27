@@ -22,6 +22,8 @@ public:
     Side getSide() const;
     int getQuantity() const;
     long getPriceTicks() const; // all 4 functions are getter functions, simply returns specific information of an Order type object
+    void reduceQuantity(int amount);
+    bool isFilled() const;
 };
 
 #endif

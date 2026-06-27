@@ -14,7 +14,7 @@ public:
 
     void addOrder(const Order& order);
 
-    const Order& frontOrder() const;
+    Order& frontOrder();
 
     void removeFrontOrder();
 

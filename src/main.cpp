@@ -1,18 +1,53 @@
 #include <iostream>
+#include <string>
 
-#include "Order.hpp"
-#include "OrderBook.hpp"
+#include "MatchingEngine.hpp"
 
 int main()
 {
-    OrderBook book;
+    MatchingEngine engine;      // One exchange for the lifetime of the program.
+    int orderID = 1;            // Simple incremental IDs.
 
-    book.addOrder(Order(1, Side::BUY, 100, 25000));
-    book.addOrder(Order(2, Side::BUY, 50, 25000));
-    book.addOrder(Order(3, Side::SELL, 75, 25100));
-    book.addOrder(Order(4, Side::SELL, 20, 25200));
+    while (true)
+    {
+        std::string command;
 
-    book.printBook();
+        std::cout << "\nBUY | SELL | EXIT : ";
+        std::cin >> command;
+
+        if(command == "EXIT")
+            break;
+
+        int quantity;
+        long price;
+
+        std::cout << "Quantity : ";
+        std::cin >> quantity;
+
+        std::cout << "Price : ";
+        std::cin >> price;
+
+        Side side;
+
+        if(command == "BUY")
+            side = Side::BUY;
+        else
+            side = Side::SELL;
+
+        // Construct the incoming order.
+        Order order(
+            orderID++,
+            side,
+            quantity,
+            price
+        );
+
+        // Let the exchange process it.
+        engine.ProcessOrder(order);
+
+        // Print the entire order book after every submission.
+        engine.getOrderBook().printBook();
+    }
 
     return 0;
 }

@@ -19,7 +19,7 @@
         return orders_.size();
     }
 
-    const Order& PriceLevel::frontOrder() const
+    Order& PriceLevel::frontOrder() 
     {
         return orders_.front();
     }
