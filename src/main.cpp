@@ -5,47 +5,88 @@
 
 int main()
 {
-    MatchingEngine engine;      // One exchange for the lifetime of the program.
-    int orderID = 1;            // Simple incremental IDs.
+    MatchingEngine engine;
+    int orderID = 1;
 
     while (true)
     {
-        std::string command;
+        std::string sideInput;
+        std::string typeInput;
 
-        std::cout << "\nBUY | SELL | EXIT : ";
-        std::cin >> command;
+        std::cout << "\nBUY / SELL / EXIT : ";
+        std::cin >> sideInput;
 
-        if(command == "EXIT")
+        if (sideInput == "EXIT")
             break;
 
-        int quantity;
-        long price;
+        std::cout << "LIMIT / MARKET : ";
+        std::cin >> typeInput;
 
+        int quantity;
         std::cout << "Quantity : ";
         std::cin >> quantity;
 
-        std::cout << "Price : ";
-        std::cin >> price;
+        // ---------------- Determine Side ----------------
 
         Side side;
 
-        if(command == "BUY")
+        if (sideInput == "BUY")
             side = Side::BUY;
         else
             side = Side::SELL;
 
-        // Construct the incoming order.
-        Order order(
-            orderID++,
-            side,
-            quantity,
-            price
-        );
+        // ---------------- Determine Order Type ----------------
 
-        // Let the exchange process it.
+        OrderType type;
+
+        if (typeInput == "LIMIT")
+            type = OrderType::LIMIT;
+        else
+            type = OrderType::MARKET;
+
+        Order order(
+            0,
+            Side::BUY,
+            0,
+            0,
+            OrderType::LIMIT
+        ); // Dummy initialization. We'll overwrite it below.
+
+        // ---------------- Construct Order ----------------
+
+        if (type == OrderType::LIMIT)
+        {
+            long price;
+
+            std::cout << "Price : ";
+            std::cin >> price;
+
+            order = Order(
+                orderID++,
+                side,
+                quantity,
+                price,
+                type
+            );
+        }
+        else
+        {
+            // Price is ignored for market orders.
+            order = Order(
+                orderID++,
+                side,
+                quantity,
+                0,
+                type
+            );
+        }
+
+        // ---------------- Submit Order ----------------
+
         engine.ProcessOrder(order);
 
-        // Print the entire order book after every submission.
+        // ---------------- Display Book ----------------
+
         engine.getOrderBook().printBook();
     }
 

@@ -24,9 +24,11 @@ void MatchingEngine::matchBuyOrder(Order& incoming)
         long bestAsk = orderBook_.getBestAsk();
 
         // Buy limit price is below the best ask.
-        // Cannot trade any further.
-        if (incoming.getPriceTicks() < bestAsk)
+        // Cannot trade any further. if ordertype is market it will go on until incoming are filled or until the orderbook has asks
+        if (incoming.getOrderType() == OrderType::LIMIT && incoming.getPriceTicks() < bestAsk)
+        {
             break;
+        }
 
         // Access the best price level.
         PriceLevel& level = orderBook_.bestAsk();
@@ -76,7 +78,7 @@ void MatchingEngine::matchSellOrder(Order& incoming)
 
         // Seller wants more than the highest buyer is willing to pay.
         // Prices do not cross, so matching stops.
-        if (incoming.getPriceTicks() > bestBid)
+        if (incoming.getOrderType() == OrderType::LIMIT && incoming.getPriceTicks() > bestBid)
             break;
 
         // Highest bid price level.
