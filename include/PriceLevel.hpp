@@ -1,8 +1,9 @@
 #pragma once
 
 #include <deque>
+#include <optional>
 
-#include "Order.hpp"
+#include "order.hpp"
 
 class PriceLevel
 {
@@ -26,7 +27,8 @@ public:
 
     int totalQuantity() const;
 
-
+    std::optional<Order> findOrder(int orderID) const;
+    
 private:
 
     long priceTicks;

@@ -130,3 +130,35 @@ bool MatchingEngine::cancelOrder(int orderID)
 {
     return orderBook_.cancelOrder(orderID);
 }
+
+bool MatchingEngine::modifyOrder(int orderID,
+                                 long newPrice,
+                                 int newQuantity)
+{
+    // Look up the current resting order.
+    auto order = orderBook_.findOrder(orderID);
+
+    if (!order.has_value())
+        return false;
+
+    // Remove the old order from the book.
+    orderBook_.cancelOrder(orderID);
+
+    // Construct the replacement order.
+    // It receives a new price and/or quantity but keeps
+    // the same ID, side, and order type.
+    Order modifiedOrder(
+        orderID,
+        order->getSide(),
+        newQuantity,
+        newPrice,
+        order->getOrderType()
+    );
+
+    // Treat it exactly like a brand-new incoming order.
+    // This guarantees matching logic is reused and
+    // time priority is reset.
+    ProcessOrder(modifiedOrder);
+
+    return true;
+}

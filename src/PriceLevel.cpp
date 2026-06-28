@@ -56,3 +56,16 @@
         }
         return false;
     }
+
+    std::optional<Order> PriceLevel::findOrder(int orderID) const
+    {
+        for (const auto& order : orders_)
+        {
+            if (order.getId() == orderID)
+            {
+                return order;
+            }
+        }
+
+        return std::nullopt;
+    }

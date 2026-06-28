@@ -3,10 +3,15 @@
 #include <map>
 #include <functional>
 #include <unordered_map>
+#include <optional>
 
-#include "Order.hpp"
+#include "order.hpp"
 #include "PriceLevel.hpp"
-
+struct OrderLocation
+{
+    Side side;
+    long price;
+};
 class OrderBook
 {
 public:
@@ -48,11 +53,13 @@ public:
 
     bool cancelOrder(int orderID);
 
+    std::optional<Order> findOrder(int orderID) const;
+
 private:
 
     std::map<long, PriceLevel, std::greater<long>> bidBook_; //sorted in descending order so first element is the best bid
 
     std::map<long, PriceLevel> askBook_;
 
-    std::unordered_map<int, long> orderIndex_;
+    std::unordered_map<int, OrderLocation> orderIndex_;
 };

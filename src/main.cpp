@@ -13,7 +13,7 @@ int main()
         std::string sideInput;
         std::string typeInput;
 
-        std::cout << "\nBUY / SELL / EXIT : ";
+       std::cout << "\nBUY / SELL / MODIFY / CANCEL / EXIT : ";
         std::cin >> sideInput;
 
         if (sideInput == "CANCEL")
@@ -31,6 +31,31 @@ int main()
             engine.getOrderBook().printBook();
             continue;
         }
+        if (sideInput == "MODIFY")
+        {
+            int modifyID;
+            int newQuantity;
+            long newPrice;
+
+            std::cout << "Order ID : ";
+            std::cin >> modifyID;
+
+            std::cout << "New Quantity : ";
+            std::cin >> newQuantity;
+
+            std::cout << "New Price : ";
+            std::cin >> newPrice;
+
+            if (engine.modifyOrder(modifyID, newPrice, newQuantity))
+                std::cout << "Order modified successfully.\n";
+            else
+                std::cout << "Order not found.\n";
+
+            engine.getOrderBook().printBook();
+
+            continue;
+        }
+
         if (sideInput == "EXIT")
             break;
 

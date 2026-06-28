@@ -1,6 +1,6 @@
 #pragma once
-#include "OrderBook.hpp"
-#include "Order.hpp"
+#include "orderBook.hpp"
+#include "order.hpp"
 
 class MatchingEngine
 {
@@ -8,6 +8,7 @@ class MatchingEngine
         void ProcessOrder(Order order);
         const OrderBook& getOrderBook() const;
         bool cancelOrder(int orderID);
+        bool modifyOrder(int orderID, long newPrice, int newQuantity);
         
     private:
         OrderBook orderBook_;

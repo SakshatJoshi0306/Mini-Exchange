@@ -1,4 +1,4 @@
-#include "OrderBook.hpp"
+#include "orderBook.hpp"
 
 #include<iostream>
 
@@ -16,12 +16,12 @@ void OrderBook::addOrder(const Order& order)
             level.addOrder(order);
 
             bidBook_.insert({price, level});
-            orderIndex_[order.getId()] = order.getPriceTicks(); //key value pair added to the unordered map, after every insertion
         }
         else
         {
             it->second.addOrder(order); //first points to the key of a map, second points to the value, so we just append the new order to the deque
         }
+        orderIndex_[order.getId()] ={Side::BUY, order.getPriceTicks()};
     }
     else
     {
@@ -35,12 +35,12 @@ void OrderBook::addOrder(const Order& order)
             level.addOrder(order);
 
             askBook_.insert({price, level});
-            orderIndex_[order.getId()] = order.getPriceTicks();
         }
         else
         {
             it->second.addOrder(order); 
         }
+        orderIndex_[order.getId()] ={Side::SELL, order.getPriceTicks()};
     }
 }
 
@@ -158,7 +158,8 @@ bool OrderBook::cancelOrder(int orderID)
 
     // ---------- Step 2 ----------
     // Get the price level from the hash map.
-    long price = indexIt->second;
+    Side side = indexIt->second.side;
+    long price = indexIt->second.price;
 
     // ---------- Step 3 ----------
     // Search the bid side first.
@@ -195,4 +196,38 @@ bool OrderBook::cancelOrder(int orderID)
     }
 
     return false;
+}
+
+std::optional<Order> OrderBook::findOrder(int orderID) const
+{
+    // Look up the order's location using its ID.
+    auto indexIt = orderIndex_.find(orderID);
+
+    // Order doesn't exist.
+    if (indexIt == orderIndex_.end())
+        return std::nullopt;
+
+    // Retrieve the stored location.
+    Side side = indexIt->second.side;
+    long price = indexIt->second.price;
+
+    // Go directly to the correct side of the book.
+    if (side == Side::BUY)
+    {
+        auto bidLevel = bidBook_.find(price);
+
+        if (bidLevel == bidBook_.end())
+            return std::nullopt;
+
+        return bidLevel->second.findOrder(orderID);
+    }
+    else
+    {
+        auto askLevel = askBook_.find(price);
+
+        if (askLevel == askBook_.end())
+            return std::nullopt;
+
+        return askLevel->second.findOrder(orderID);
+    }
 }
