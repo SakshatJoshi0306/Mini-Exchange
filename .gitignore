@@ -2,3 +2,4 @@ build/
 *.o
 *.exe
 *.out
+echo "textbook.md" >> .gitignore
