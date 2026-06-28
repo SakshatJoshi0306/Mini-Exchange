@@ -7,7 +7,8 @@ class MatchingEngine
     public:
         void ProcessOrder(Order order);
         const OrderBook& getOrderBook() const;
-
+        bool cancelOrder(int orderID);
+        
     private:
         OrderBook orderBook_;
 
@@ -21,4 +22,6 @@ class MatchingEngine
             long quantity,
             long priceTicks
         );
+
+        
 };

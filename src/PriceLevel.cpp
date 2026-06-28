@@ -43,3 +43,16 @@
         }
         return totalquantity;
     }   
+
+    bool PriceLevel::removeOrder(int orderID)
+    {
+        for (auto it = orders_.begin(); it != orders_.end(); ++it)
+        {
+            if (it->getId() == orderID)
+            {
+                orders_.erase(it);
+                return true;
+            }
+        }
+        return false;
+    }

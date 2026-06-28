@@ -125,3 +125,8 @@ const OrderBook& MatchingEngine::getOrderBook() const
 {
     return orderBook_;
 }
+
+bool MatchingEngine::cancelOrder(int orderID)
+{
+    return orderBook_.cancelOrder(orderID);
+}

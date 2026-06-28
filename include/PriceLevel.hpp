@@ -18,11 +18,14 @@ public:
 
     void removeFrontOrder();
 
+    bool removeOrder(int orderID);
+
     bool empty() const;
 
     size_t numberOfOrders() const;
 
     int totalQuantity() const;
+
 
 private:
 

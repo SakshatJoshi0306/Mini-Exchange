@@ -16,6 +16,7 @@ void OrderBook::addOrder(const Order& order)
             level.addOrder(order);
 
             bidBook_.insert({price, level});
+            orderIndex_[order.getId()] = order.getPriceTicks(); //key value pair added to the unordered map, after every insertion
         }
         else
         {
@@ -34,6 +35,7 @@ void OrderBook::addOrder(const Order& order)
             level.addOrder(order);
 
             askBook_.insert({price, level});
+            orderIndex_[order.getId()] = order.getPriceTicks();
         }
         else
         {
@@ -142,4 +144,55 @@ void OrderBook::removeBestBidLevel()
 {
     // Same logic for bids.
     bidBook_.erase(bidBook_.begin());
+}
+bool OrderBook::cancelOrder(int orderID)
+{
+    // ---------- Step 1 ----------
+    // Check if the order exists.
+    auto indexIt = orderIndex_.find(orderID);
+
+    if (indexIt == orderIndex_.end())
+    {
+        return false;
+    }
+
+    // ---------- Step 2 ----------
+    // Get the price level from the hash map.
+    long price = indexIt->second;
+
+    // ---------- Step 3 ----------
+    // Search the bid side first.
+    auto bidLevel = bidBook_.find(price);
+
+    if (bidLevel != bidBook_.end())
+    {
+        if (bidLevel->second.removeOrder(orderID))
+        {
+            if (bidLevel->second.empty())
+                bidBook_.erase(bidLevel);
+
+            orderIndex_.erase(orderID);
+
+            return true;
+        }
+    }
+
+    // ---------- Step 4 ----------
+    // Otherwise search the ask side.
+    auto askLevel = askBook_.find(price);
+
+    if (askLevel != askBook_.end())
+    {
+        if (askLevel->second.removeOrder(orderID))
+        {
+            if (askLevel->second.empty())
+                askBook_.erase(askLevel);
+
+            orderIndex_.erase(orderID);
+
+            return true;
+        }
+    }
+
+    return false;
 }

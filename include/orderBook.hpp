@@ -2,6 +2,7 @@
 
 #include <map>
 #include <functional>
+#include <unordered_map>
 
 #include "Order.hpp"
 #include "PriceLevel.hpp"
@@ -45,9 +46,13 @@ public:
 // Symmetric to removeBestAskLevel().
     void removeBestBidLevel();
 
+    bool cancelOrder(int orderID);
+
 private:
 
     std::map<long, PriceLevel, std::greater<long>> bidBook_; //sorted in descending order so first element is the best bid
 
     std::map<long, PriceLevel> askBook_;
+
+    std::unordered_map<int, long> orderIndex_;
 };

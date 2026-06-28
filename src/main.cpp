@@ -16,6 +16,21 @@ int main()
         std::cout << "\nBUY / SELL / EXIT : ";
         std::cin >> sideInput;
 
+        if (sideInput == "CANCEL")
+        {
+            int orderID;
+
+            std::cout << "Order ID : ";
+            std::cin >> orderID;
+
+            if (engine.cancelOrder(orderID))
+                std::cout << "Order cancelled successfully.\n";
+            else
+                std::cout << "Order not found.\n";
+
+            engine.getOrderBook().printBook();
+            continue;
+        }
         if (sideInput == "EXIT")
             break;
 
