@@ -1,6 +1,7 @@
 #include "orderBook.hpp"
 
 #include<iostream>
+#include <iomanip>
 
 void OrderBook::addOrder(const Order& order)
 {
@@ -67,48 +68,70 @@ long OrderBook::getBestAsk() const
 
 void OrderBook::printBids() const
 {
-    std::cout << "\n------ BID BOOK ------\n";
+    std::cout << "\n================== BID SIDE ==================\n\n";
+
+    std::cout
+        << std::left
+        << std::setw(12) << "Price"
+        << std::setw(12) << "Orders"
+        << std::setw(12) << "Quantity"
+        << '\n';
+
+    std::cout
+        << "----------------------------------------------\n";
 
     for (const auto& [price, level] : bidBook_)
     {
         std::cout
-            << price
-            << " | "
-            << level.numberOfOrders()
-            << " orders | Qty "
-            << level.totalQuantity()
+            << std::setw(12) << price
+            << std::setw(12) << level.numberOfOrders()
+            << std::setw(12) << level.totalQuantity()
             << '\n';
     }
 }
 
 void OrderBook::printAsks() const
 {
-    std::cout << "\n------ ASK BOOK ------\n";
+    std::cout << "\n================== ASK SIDE ==================\n\n";
+
+    std::cout
+        << std::left
+        << std::setw(12) << "Price"
+        << std::setw(12) << "Orders"
+        << std::setw(12) << "Quantity"
+        << '\n';
+
+    std::cout
+        << "----------------------------------------------\n";
 
     for (const auto& [price, level] : askBook_)
     {
         std::cout
-            << price
-            << " | "
-            << level.numberOfOrders()
-            << " orders | Qty "
-            << level.totalQuantity()
+            << std::setw(12) << price
+            << std::setw(12) << level.numberOfOrders()
+            << std::setw(12) << level.totalQuantity()
             << '\n';
     }
 }
 
 void OrderBook::printBook() const
 {
-    std::cout << "\n==============================\n";
+    std::cout
+        << "\n\n=========================================================\n"
+        << "                 LEVEL II ORDER BOOK\n"
+        << "=========================================================\n";
 
     printAsks();
 
-    std::cout << "------------------------------\n";
+    std::cout
+        << "\n=========================================================\n";
 
     printBids();
 
-    std::cout << "==============================\n";
+    std::cout
+        << "\n=========================================================\n";
 }
+
 bool OrderBook::hasBids() const
 {
     return !bidBook_.empty();

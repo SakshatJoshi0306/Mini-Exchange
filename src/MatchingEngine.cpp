@@ -204,7 +204,19 @@ void MatchingEngine::recordTrade(const Order& incoming, const Order& resting, in
 
 void MatchingEngine::printTradeHistory() const
 {
-    std::cout << "\n========== TRADE HISTORY ==========\n";
+    std::cout << "\n================ TIME & SALES ================\n\n";
+
+    std::cout
+        << std::left
+        << std::setw(12) << "Time"
+        << std::setw(10) << "Price"
+        << std::setw(10) << "Qty"
+        << std::setw(10) << "Buyer"
+        << std::setw(10) << "Seller"
+        << '\n';
+
+    std::cout
+        << "----------------------------------------------------------\n";
 
     for (const auto& trade : tradeHistory_)
     {
@@ -212,19 +224,26 @@ void MatchingEngine::printTradeHistory() const
             std::chrono::system_clock::to_time_t(trade.timestamp);
 
         std::cout
+            << std::setw(12)
             << std::put_time(std::localtime(&time), "%H:%M:%S")
-            << " | Buy "
-            << trade.buyOrderID
-            << " | Sell "
-            << trade.sellOrderID
-            << " | Qty "
-            << trade.quantity
-            << " | Price "
+
+            << std::setw(10)
             << trade.price
+
+            << std::setw(10)
+            << trade.quantity
+
+            << std::setw(10)
+            << trade.buyOrderID
+
+            << std::setw(10)
+            << trade.sellOrderID
+
             << '\n';
     }
 
-    std::cout << "===================================\n";
+    std::cout
+        << "\n==============================================\n";
 }
 
 int MatchingEngine::tradeCount() const
