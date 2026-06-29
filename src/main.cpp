@@ -128,6 +128,7 @@ int main()
         // ---------------- Display Book ----------------
 
         engine.getOrderBook().printBook();
+        engine.printTradeHistory();
     }
 
     return 0;

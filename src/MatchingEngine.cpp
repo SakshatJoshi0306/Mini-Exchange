@@ -1,5 +1,8 @@
 #include "MatchingEngine.hpp"
 #include <iostream>
+#include <iomanip>
+#include <ctime>
+
 
 void MatchingEngine::ProcessOrder(Order order) 
 {
@@ -45,6 +48,8 @@ void MatchingEngine::matchBuyOrder(Order& incoming)
         // Reduce both orders.
         incoming.reduceQuantity(tradedQuantity);
         resting.reduceQuantity(tradedQuantity);
+
+        recordTrade(incoming, resting, tradedQuantity, resting.getPriceTicks());
 
         // Remove the resting order if it has been fully executed.
         if (resting.isFilled())
@@ -96,6 +101,8 @@ void MatchingEngine::matchSellOrder(Order& incoming)
         // Reduce remaining quantities.
         incoming.reduceQuantity(tradedQuantity);
         resting.reduceQuantity(tradedQuantity);
+
+        recordTrade(incoming, resting, tradedQuantity, resting.getPriceTicks());
 
         // Remove fully executed resting order.
         if (resting.isFilled())
@@ -161,4 +168,61 @@ bool MatchingEngine::modifyOrder(int orderID,
     ProcessOrder(modifiedOrder);
 
     return true;
+}
+
+void MatchingEngine::recordTrade(const Order& incoming, const Order& resting, int tradedQuantity,  long executionPrice)                                
+{
+    int buyID;
+    int sellID;
+
+    // Determine which order is the buyer.
+    if (incoming.getSide() == Side::BUY)
+    {
+        buyID = incoming.getId();
+        sellID = resting.getId();
+    }
+    else
+    {
+        buyID = resting.getId();
+        sellID = incoming.getId();
+    }
+
+    //=========================================================
+    // emplace_back constructs the Trade directly inside the
+    // vector.
+    //
+    // No temporary Trade object is created.
+    //=========================================================
+
+    tradeHistory_.emplace_back(
+        buyID,
+        sellID,
+        executionPrice,
+        tradedQuantity
+    );
+}
+
+void MatchingEngine::printTradeHistory() const
+{
+    std::cout << "\n========== TRADE HISTORY ==========\n";
+
+    for (const auto& trade : tradeHistory_)
+    {
+        std::time_t time =
+            std::chrono::system_clock::to_time_t(trade.timestamp);
+
+        std::cout
+            << std::put_time(std::localtime(&time), "%H:%M:%S")
+            << " | Buy "
+            << trade.buyOrderID
+            << " | Sell "
+            << trade.sellOrderID
+            << " | Qty "
+            << trade.quantity
+            << " | Price "
+            << trade.price
+            << '\n';
+    }
+
+    std::cout << "===================================\n";
 }
