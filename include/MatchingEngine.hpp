@@ -15,6 +15,20 @@ class MatchingEngine
         void recordTrade(const Order& resting, const Order& incoming, int tradedQuantity, long executionPrice);
 
         void printTradeHistory() const;
+
+        int tradeCount() const;
+
+        int totalVolume() const;
+
+        long lastTradedPrice() const;
+
+        long highestTradePrice() const;
+
+        long lowestTradePrice() const;
+
+        double calculateVWAP() const; //VWAP stands for volume weighted average price
+
+        void printMarketStatistics() const;
         
     private:
         OrderBook orderBook_;

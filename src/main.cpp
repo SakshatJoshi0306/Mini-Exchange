@@ -71,19 +71,36 @@ int main()
         Side side;
 
         if (sideInput == "BUY")
+        {
             side = Side::BUY;
-        else
+        }
+        else if (sideInput == "SELL")
+        {
             side = Side::SELL;
+        }
+        else
+        {
+            std::cout << "Invalid command.\n";
+            continue;
+        }
 
         // ---------------- Determine Order Type ----------------
 
         OrderType type;
 
         if (typeInput == "LIMIT")
+        {
             type = OrderType::LIMIT;
-        else
+        }
+        else if (typeInput == "MARKET")
+        {
             type = OrderType::MARKET;
-
+        }
+        else
+        {
+            std::cout << "Invalid order type.\n";
+            continue;
+        }
         Order order(
             0,
             Side::BUY,
@@ -129,6 +146,7 @@ int main()
 
         engine.getOrderBook().printBook();
         engine.printTradeHistory();
+        engine.printMarketStatistics();
     }
 
     return 0;
