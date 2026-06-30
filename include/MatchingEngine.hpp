@@ -44,6 +44,8 @@ class MatchingEngine
             long priceTicks
         );
 
+        bool canFullyFill(const Order& order) const;
+
         std::vector<Trade> tradeHistory_;
 
         

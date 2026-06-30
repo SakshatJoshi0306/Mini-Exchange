@@ -53,6 +53,20 @@ public:
 
     bool cancelOrder(int orderID);
 
+
+//=============================================================
+// Read-only access to the bid book.
+// Used by MatchingEngine for liquidity checks (e.g. FOK).
+//=============================================================
+
+const std::map<long, PriceLevel, std::greater<long>>& getBidBook() const;
+
+//=============================================================
+// Read-only access to the ask book.
+//=============================================================
+
+const std::map<long, PriceLevel>& getAskBook() const;
+
     std::optional<Order> findOrder(int orderID) const;
 
 private:

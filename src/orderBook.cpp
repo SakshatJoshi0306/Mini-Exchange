@@ -254,3 +254,13 @@ std::optional<Order> OrderBook::findOrder(int orderID) const
         return askLevel->second.findOrder(orderID);
     }
 }
+
+const std::map<long, PriceLevel, std::greater<long>>& OrderBook::getBidBook() const
+{
+    return bidBook_;
+}
+
+const std::map<long, PriceLevel>& OrderBook::getAskBook() const
+{
+    return askBook_;
+}

@@ -6,6 +6,14 @@
 
 void MatchingEngine::ProcessOrder(Order order) 
 {
+    // FIRST: FOK liquidity check
+    if (order.getOrderType() == OrderType::FOK)
+    {
+        if (!canFullyFill(order))
+        {
+            return;
+        }
+    }
     if(order.getSide() == Side::BUY)
     {
         matchBuyOrder(order);
@@ -13,6 +21,10 @@ void MatchingEngine::ProcessOrder(Order order)
     else
     {
         matchSellOrder(order);
+    }
+    if (!order.isFilled() && order.getOrderType() == OrderType::LIMIT)
+    {
+        orderBook_.addOrder(order);
     }
 }
 void MatchingEngine::matchBuyOrder(Order& incoming)
@@ -66,10 +78,6 @@ void MatchingEngine::matchBuyOrder(Order& incoming)
 
     // If some quantity remains after matching,
     // it becomes a resting limit order.
-    if (!incoming.isFilled())
-    {
-        orderBook_.addOrder(incoming);
-    }
 }
 void MatchingEngine::matchSellOrder(Order& incoming)
 {
@@ -119,10 +127,6 @@ void MatchingEngine::matchSellOrder(Order& incoming)
 
     // If some quantity remains after matching,
     // it becomes a resting sell order.
-    if (!incoming.isFilled())
-    {
-        orderBook_.addOrder(incoming);
-    }
 }
 void MatchingEngine::executeTrade(Order& incoming, Order& resting, long quantity, long priceTicks)
 {
@@ -363,4 +367,49 @@ void MatchingEngine::printMarketStatistics() const
               << '\n';
 
     std::cout << "=======================================\n";
+}
+
+bool MatchingEngine::canFullyFill(const Order& order) const
+{
+    int remaining = order.getQuantity();
+
+    if (order.getSide() == Side::BUY)
+    {
+        // Walk through asks.
+
+        for (const auto& [price, level] : orderBook_.getAskBook())
+        {
+            // Price no longer crosses.
+            if (order.getOrderType() != OrderType::MARKET &&
+                price > order.getPriceTicks())
+            {
+                break;
+            }
+
+            remaining -= level.totalQuantity();
+
+            if (remaining <= 0)
+                return true;
+        }
+    }
+    else
+    {
+        // Walk through bids.
+
+        for (const auto& [price, level] : orderBook_.getBidBook())
+        {
+            if (order.getOrderType() != OrderType::MARKET &&
+                price < order.getPriceTicks())
+            {
+                break;
+            }
+
+            remaining -= level.totalQuantity();
+
+            if (remaining <= 0)
+                return true;
+        }
+    }
+
+    return false;
 }

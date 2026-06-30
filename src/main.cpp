@@ -59,7 +59,7 @@ int main()
         if (sideInput == "EXIT")
             break;
 
-        std::cout << "LIMIT / MARKET : ";
+        std::cout << "LIMIT / MARKET / IOC / FOK : ";
         std::cin >> typeInput;
 
         int quantity;
@@ -89,13 +89,21 @@ int main()
         OrderType type;
 
         if (typeInput == "LIMIT")
-        {
-            type = OrderType::LIMIT;
-        }
-        else if (typeInput == "MARKET")
-        {
-            type = OrderType::MARKET;
-        }
+    {
+        type = OrderType::LIMIT;
+    }
+    else if (typeInput == "MARKET")
+    {
+        type = OrderType::MARKET;
+    }   
+    else if (typeInput == "IOC")
+    {
+        type = OrderType::IOC;
+    }
+    else if (typeInput == "FOK")
+    {
+        type = OrderType::FOK;
+    }
         else
         {
             std::cout << "Invalid order type.\n";
@@ -111,7 +119,17 @@ int main()
 
         // ---------------- Construct Order ----------------
 
-        if (type == OrderType::LIMIT)
+        if (type == OrderType::MARKET)
+        {
+            order = Order(
+            orderID++,
+            side,
+            quantity,
+            0,
+            type
+            );
+        }
+        else
         {
             long price;
 
@@ -119,22 +137,11 @@ int main()
             std::cin >> price;
 
             order = Order(
-                orderID++,
-                side,
-                quantity,
-                price,
-                type
-            );
-        }
-        else
-        {
-            // Price is ignored for market orders.
-            order = Order(
-                orderID++,
-                side,
-                quantity,
-                0,
-                type
+            orderID++,
+            side,
+            quantity,
+            price,
+            type
             );
         }
 
