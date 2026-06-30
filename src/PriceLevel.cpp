@@ -69,3 +69,40 @@
 
         return std::nullopt;
     }
+
+    int PriceLevel::totalVisibleQuantity() const
+    {
+        int total = 0;
+
+        for (const Order& order : orders_)
+        {
+            total += order.getVisibleQuantity();
+        }
+
+        return total;
+    }
+
+    void PriceLevel::processFrontAfterExecution()
+{
+    if (orders_.empty())
+        return;
+
+    Order& front = orders_.front();
+
+    if (front.getVisibleQuantity() > 0)
+        return;
+
+    if (front.refreshIfNeeded())
+    {
+        Order refreshed = std::move(front);
+
+        orders_.pop_front();
+
+        orders_.push_back(std::move(refreshed));
+    }
+    else
+    {
+        // No hidden quantity left.
+        orders_.pop_front();
+    }
+}

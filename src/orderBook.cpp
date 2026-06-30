@@ -85,7 +85,7 @@ void OrderBook::printBids() const
         std::cout
             << std::setw(12) << price
             << std::setw(12) << level.numberOfOrders()
-            << std::setw(12) << level.totalQuantity()
+            << std::setw(12) << level.totalVisibleQuantity()
             << '\n';
     }
 }
@@ -109,7 +109,7 @@ void OrderBook::printAsks() const
         std::cout
             << std::setw(12) << price
             << std::setw(12) << level.numberOfOrders()
-            << std::setw(12) << level.totalQuantity()
+            << std::setw(12) << level.totalVisibleQuantity()
             << '\n';
     }
 }

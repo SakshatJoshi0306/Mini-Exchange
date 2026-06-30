@@ -87,25 +87,31 @@ int main()
         // ---------------- Determine Order Type ----------------
 
         OrderType type;
+        bool iceberg = false;
 
         if (typeInput == "LIMIT")
-    {
-        type = OrderType::LIMIT;
-    }
-    else if (typeInput == "MARKET")
-    {
-        type = OrderType::MARKET;
-    }   
-    else if (typeInput == "IOC")
-    {
-        type = OrderType::IOC;
-    }
-    else if (typeInput == "FOK")
-    {
-        type = OrderType::FOK;
-    }
-        else
         {
+            type = OrderType::LIMIT;
+        }
+        else if (typeInput == "MARKET")
+        {
+            type = OrderType::MARKET;
+        }
+        else if (typeInput == "IOC")
+        {
+            type = OrderType::IOC;
+        }
+        else if (typeInput == "FOK")
+        {
+            type = OrderType::FOK;
+        }
+        else if (typeInput == "ICEBERG")
+        {
+            type = OrderType::LIMIT;
+            iceberg = true;
+        }
+        else
+        {       
             std::cout << "Invalid order type.\n";
             continue;
         }
@@ -121,28 +127,27 @@ int main()
 
         if (type == OrderType::MARKET)
         {
-            order = Order(
-            orderID++,
-            side,
-            quantity,
-            0,
-            type
-            );
+            order = Order( orderID++, side, quantity, 0, type);
         }
         else
         {
             long price;
-
             std::cout << "Price : ";
             std::cin >> price;
 
-            order = Order(
-            orderID++,
-            side,
-            quantity,
-            price,
-            type
-            );
+            if (iceberg)
+            {
+                int peak;
+
+                std::cout << "Peak Size : ";
+                std::cin >> peak;
+
+                order = Order(orderID++, side, quantity, price, type, peak);
+            }
+            else
+            {
+                order = Order(orderID++, side, quantity, price, type);
+            }
         }
 
         // ---------------- Submit Order ----------------

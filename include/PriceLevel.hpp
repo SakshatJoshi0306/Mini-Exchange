@@ -27,7 +27,11 @@ public:
 
     int totalQuantity() const;
 
+    int totalVisibleQuantity() const;
+
     std::optional<Order> findOrder(int orderID) const;
+
+    void processFrontAfterExecution();
     
 private:
 

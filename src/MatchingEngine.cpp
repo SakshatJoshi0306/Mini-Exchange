@@ -24,6 +24,7 @@ void MatchingEngine::ProcessOrder(Order order)
     }
     if (!order.isFilled() && order.getOrderType() == OrderType::LIMIT)
     {
+        order.initializeVisibleSlice();
         orderBook_.addOrder(order);
     }
 }
@@ -53,8 +54,8 @@ void MatchingEngine::matchBuyOrder(Order& incoming)
 
         // Trade the smaller remaining quantity.
         int tradedQuantity = std::min(
-            incoming.getQuantity(),
-            resting.getQuantity()
+            incoming.getRemainingQuantity(),
+            resting.getVisibleQuantity()
         );
 
         // Reduce both orders.
@@ -63,10 +64,9 @@ void MatchingEngine::matchBuyOrder(Order& incoming)
 
         recordTrade(incoming, resting, tradedQuantity, resting.getPriceTicks());
 
-        // Remove the resting order if it has been fully executed.
-        if (resting.isFilled())
+        if (resting.getVisibleQuantity() == 0)
         {
-            level.removeFrontOrder();
+            level.processFrontAfterExecution();
         }
 
         // Remove the price level if no orders remain at that price.
@@ -102,8 +102,8 @@ void MatchingEngine::matchSellOrder(Order& incoming)
 
         // Execute the maximum possible trade.
         int tradedQuantity = std::min(
-            incoming.getQuantity(),
-            resting.getQuantity()
+            incoming.getRemainingQuantity(),
+            resting.getVisibleQuantity()
         );
 
         // Reduce remaining quantities.
@@ -112,12 +112,10 @@ void MatchingEngine::matchSellOrder(Order& incoming)
 
         recordTrade(incoming, resting, tradedQuantity, resting.getPriceTicks());
 
-        // Remove fully executed resting order.
-        if (resting.isFilled())
+        if (resting.getVisibleQuantity() == 0)
         {
-            level.removeFrontOrder();
+            level.processFrontAfterExecution();
         }
-
         // Remove the entire price level if no orders remain.
         if (level.empty())
         {
