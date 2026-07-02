@@ -222,6 +222,30 @@ void MatchingEngine::recordTrade(const Order& incoming, const Order& resting, in
         tradedQuantity
     );
 
+//---------------------------------------------------------
+// Update cached statistics.
+//---------------------------------------------------------
+
+        tradeCount_++;
+
+        totalVolume_ += tradedQuantity;
+
+        lastTradePrice_ = executionPrice;
+
+        if (tradeCount_ == 1)
+        {
+            highestTradePrice_ = executionPrice;
+            lowestTradePrice_ = executionPrice;
+        }
+        else
+        {
+            highestTradePrice_ = std::max(highestTradePrice_, executionPrice);
+
+            lowestTradePrice_ = std::min(lowestTradePrice_, executionPrice);
+        }
+
+cumulativeTradeValue_ += static_cast<long long>(executionPrice)*tradedQuantity;
+
     checkStopOrders(executionPrice);
 }
 
@@ -273,86 +297,34 @@ int MatchingEngine::tradeCount() const
 {
     // vector already knows its size.
 
-    return tradeHistory_.size();
+    return tradeCount_;
 }
 
 int MatchingEngine::totalVolume() const
 {
-    int volume = 0;
-
-    for (const auto& trade : tradeHistory_)
-    {
-        volume += trade.quantity;
-    }
-
-    return volume;
+    return totalVolume_;
 }
 
 long MatchingEngine::lastTradedPrice() const
 {
-    if (tradeHistory_.empty())
-        return 0;
-
-    return tradeHistory_.back().price;
+    return lastTradePrice_;
 }
 
 long MatchingEngine::highestTradePrice() const
 {
-    if (tradeHistory_.empty())
-        return 0;
-
-    long highest = tradeHistory_.front().price;
-
-    for (const auto& trade : tradeHistory_)
-    {
-        if (trade.price > highest)
-        {
-            highest = trade.price;
-        }
-    }
-
-    return highest;
+    return highestTradePrice_;
 }
 
 long MatchingEngine::lowestTradePrice() const
 {
-    if (tradeHistory_.empty())
-        return 0;
-
-    long lowest = tradeHistory_.front().price;
-
-    for (const auto& trade : tradeHistory_)
-    {
-        if (trade.price < lowest)
-        {
-            lowest = trade.price;
-        }
-    }
-
-    return lowest;
+    return lowestTradePrice_;
 }
 
 double MatchingEngine::calculateVWAP() const
 {
-    if (tradeHistory_.empty())
-        return 0.0;
+    if(totalVolume_ == 0) return 0.0;
 
-    long long totalValue = 0;
-    int totalQty = 0;
-
-    for (const auto& trade : tradeHistory_)
-    {
-        // Dollar value traded.
-
-        totalValue +=
-            static_cast<long long>(trade.price) *
-            trade.quantity;
-
-        totalQty += trade.quantity;
-    }
-
-    return static_cast<double>(totalValue)
-           / totalQty;
+    return static_cast<double>(cumulativeTradeValue_) / totalVolume_;
 }
 
 void MatchingEngine::printMarketStatistics() const

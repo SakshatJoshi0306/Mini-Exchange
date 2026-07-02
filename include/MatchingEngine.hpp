@@ -54,5 +54,24 @@ class MatchingEngine
 
         void triggerStopOrder(std::size_t index);
 
+//=========================================================
+// Cached market statistics.
+//
+// Updated incrementally after every trade so statistics
+// can be queried in O(1) time.
+//=========================================================
+
+        int tradeCount_ = 0;
+
+        int totalVolume_ = 0;
+
+        long lastTradePrice_ = 0;
+
+        long highestTradePrice_ = 0;
+
+        long lowestTradePrice_ = 0;
+
+        long long cumulativeTradeValue_ = 0;
+
         
 };
