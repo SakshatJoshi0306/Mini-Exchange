@@ -38,7 +38,7 @@ TEST_CASE("Buy order trades with best ask")
     );
 
     engine.ProcessOrder(
-        Order(2, 2,Side::BUY, 100, 25000)
+        Order(2, 2, Side::BUY, 100, 25000)
     );
 
     // The sell order should be completely filled,

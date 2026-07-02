@@ -264,3 +264,37 @@ const std::map<long, PriceLevel>& OrderBook::getAskBook() const
 {
     return askBook_;
 }
+
+int OrderBook::restingOrders() const
+{
+    int count = 0;
+
+    for (const auto& [price, level] : bidBook_)
+    {
+        count += level.numberOfOrders();
+    }
+
+    for (const auto& [price, level] : askBook_)
+    {
+        count += level.numberOfOrders();
+    }
+
+    return count;
+}
+
+int OrderBook::priceLevelCount() const
+{
+    return bidBook_.size() + askBook_.size();
+}
+
+double OrderBook::averageQueueLength() const
+{
+    int levels = priceLevelCount();
+
+    if (levels == 0)
+        return 0.0;
+
+    return static_cast<double>(
+               restingOrders())
+           / levels;
+}

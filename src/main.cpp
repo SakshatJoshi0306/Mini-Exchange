@@ -2,9 +2,31 @@
 #include <string>
 
 #include "MatchingEngine.hpp"
+#include "Benchmark.hpp"
 
 int main()
 {
+    int mode;
+
+    std::cout << "==============================\n";
+    std::cout << "Mini Exchange\n";
+    std::cout << "==============================\n";
+    std::cout << "1. Interactive Mode\n";
+    std::cout << "2. Benchmark Mode\n";
+    std::cout << "Choice: ";
+
+    std::cin >> mode;
+
+    if (mode == 2)
+    {
+        Benchmark benchmark;
+
+        benchmark.run(100000);
+
+        return 0;
+    }
+
+    
     MatchingEngine engine;
     int orderID = 1;
 

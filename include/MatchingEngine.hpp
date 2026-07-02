@@ -30,6 +30,8 @@ class MatchingEngine
 
         void printMarketStatistics() const;
         
+        void setBenchmarkMode(bool enabled);
+        
     private:
         OrderBook orderBook_;
 
@@ -73,5 +75,6 @@ class MatchingEngine
 
         long long cumulativeTradeValue_ = 0;
 
+        bool benchmarkMode_ = false;
         
 };

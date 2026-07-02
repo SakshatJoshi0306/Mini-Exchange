@@ -36,6 +36,7 @@ add_library(TradingEngineLib
     src/OrderBook.cpp
     src/PriceLevel.cpp
     src/MatchingEngine.cpp
+    src/Benchmark.cpp
 
 )
 

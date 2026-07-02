@@ -58,7 +58,7 @@ void MatchingEngine::matchBuyOrder(Order& incoming)
         // Oldest order at this price (FIFO).
         Order& resting = level.frontOrder();
 
-        if (incoming.getClientID() == resting.getClientID())
+        if (incoming.getClientID() == resting.getClientID() && !benchmarkMode_)
         {
             std::cout << "Self-match prevented (Cancel Newest policy). \n Incoming order cancelled.\n";
             return;
@@ -112,7 +112,7 @@ void MatchingEngine::matchSellOrder(Order& incoming)
         // Oldest order at that price (FIFO).
         Order& resting = level.frontOrder();
 
-        if (incoming.getClientID() == resting.getClientID())
+        if (incoming.getClientID() == resting.getClientID() && !benchmarkMode_)
         {
             std::cout << "Self-match prevented. Incoming order cancelled.\n";
             return;
@@ -444,4 +444,9 @@ void MatchingEngine::triggerStopOrder(std::size_t index)
     stopOrders_.erase(stopOrders_.begin() + index);
 
     ProcessOrder(order);
+}
+
+void MatchingEngine::setBenchmarkMode(bool enabled)
+{
+    benchmarkMode_ = enabled;
 }

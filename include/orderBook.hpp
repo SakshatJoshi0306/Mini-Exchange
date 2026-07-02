@@ -53,6 +53,11 @@ public:
 
     bool cancelOrder(int orderID);
 
+    int restingOrders() const;
+
+    int priceLevelCount() const;
+
+    double averageQueueLength() const;
 
 //=============================================================
 // Read-only access to the bid book.
