@@ -1,7 +1,7 @@
 #include "order.hpp"
 #include <stdexcept>
 #include <algorithm>
-
+//Initialising constructor for the normal case -> lmit/market
 Order::Order(
     int id,
     Side side,
@@ -16,9 +16,14 @@ Order::Order(
     peakSize(quantity),
     iceberg(false),
     priceTicks(priceTicks),
-    orderType(orderType)
+    orderType(orderType),
+    stopOrder(false),
+    stopPrice(0),
+    stopMarket(false)
 {
 }
+
+//Initialising constructor for the iceberg orders
 Order::Order(
     int id,
     Side side,
@@ -34,7 +39,36 @@ Order::Order(
     peakSize(peakSize),
     iceberg(true),
     priceTicks(priceTicks),
-    orderType(orderType)
+    orderType(orderType),
+    stopOrder(false),
+    stopPrice(0),
+    stopMarket(false)
+{
+}
+
+//initialising constructor for stop orders -> ordertype after trigger price reaches is already decided in the initialisation
+Order::Order(
+    int id,
+    Side side,
+    int quantity,
+    long triggerPrice,
+    bool marketAfterTrigger,
+    long limitPrice)
+    :
+    id(id),
+    side(side),
+    quantity(quantity),
+    visibleQuantity(quantity),
+    peakSize(quantity),
+    iceberg(false),
+    stopOrder(true),
+    stopPrice(triggerPrice),
+    stopMarket(marketAfterTrigger),
+    priceTicks(limitPrice),
+    orderType(
+        marketAfterTrigger ?
+        OrderType::MARKET :
+        OrderType::LIMIT)
 {
 }
 
@@ -134,4 +168,24 @@ void Order::initializeVisibleSlice()
         return;
 
     visibleQuantity = std::min(quantity, peakSize);
+}
+
+bool Order::isStopOrder() const
+{
+    return stopOrder;
+}
+
+long Order::getStopPrice() const
+{
+    return stopPrice;
+}
+
+bool Order::isStopMarket() const
+{
+    return stopMarket;
+}
+
+void Order::activateStop()
+{
+    stopOrder = false;
 }

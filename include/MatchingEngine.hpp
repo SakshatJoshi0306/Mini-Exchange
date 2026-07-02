@@ -48,5 +48,11 @@ class MatchingEngine
 
         std::vector<Trade> tradeHistory_;
 
+        std::vector<Order> stopOrders_;
+
+        void checkStopOrders(long lastTradePrice);
+
+        void triggerStopOrder(std::size_t index);
+
         
 };

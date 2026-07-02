@@ -59,7 +59,7 @@ int main()
         if (sideInput == "EXIT")
             break;
 
-        std::cout << "LIMIT / MARKET / IOC / FOK : ";
+        std::cout << "LIMIT / MARKET / IOC / FOK / ICEBERG / STOPMARKET / STOPLIMIT : ";
         std::cin >> typeInput;
 
         int quantity;
@@ -88,6 +88,8 @@ int main()
 
         OrderType type;
         bool iceberg = false;
+        bool stopOrder = false;
+        bool stopMarket = false;
 
         if (typeInput == "LIMIT")
         {
@@ -110,6 +112,21 @@ int main()
             type = OrderType::LIMIT;
             iceberg = true;
         }
+        else if (typeInput == "STOPMARKET")
+        {
+        stopOrder = true;
+        stopMarket = true;
+
+        // After activation it becomes a MARKET order.
+        type = OrderType::MARKET;
+        }
+        else if(typeInput == "STOPLIMIT")
+        {
+            stopOrder = true;
+            stopMarket = false;
+
+            type = OrderType::LIMIT;
+        }
         else
         {       
             std::cout << "Invalid order type.\n";
@@ -124,8 +141,28 @@ int main()
         ); // Dummy initialization. We'll overwrite it below.
 
         // ---------------- Construct Order ----------------
+        if (stopOrder)
+        {
+            long triggerPrice;
 
-        if (type == OrderType::MARKET)
+            std::cout << "Trigger Price : ";
+            std::cin >> triggerPrice;
+
+            if (stopMarket)
+            {
+                order = Order(orderID++, side, quantity,triggerPrice,true);
+            }
+            else
+            {
+                long limitPrice;
+
+                std::cout << "Limit Price : ";
+                std::cin >> limitPrice;
+
+                order = Order(orderID++, side, quantity, triggerPrice, false, limitPrice);
+            }
+        }
+        else if (type == OrderType::MARKET)
         {
             order = Order( orderID++, side, quantity, 0, type);
         }

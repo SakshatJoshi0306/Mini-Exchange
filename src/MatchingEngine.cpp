@@ -2,10 +2,16 @@
 #include <iostream>
 #include <iomanip>
 #include <ctime>
+#include <algorithm>
 
 
 void MatchingEngine::ProcessOrder(Order order) 
 {
+    if (order.isStopOrder())
+    {
+        stopOrders_.push_back(order);
+        return;
+    }
     // FIRST: FOK liquidity check
     if (order.getOrderType() == OrderType::FOK)
     {
@@ -202,6 +208,8 @@ void MatchingEngine::recordTrade(const Order& incoming, const Order& resting, in
         executionPrice,
         tradedQuantity
     );
+
+    checkStopOrders(executionPrice);
 }
 
 void MatchingEngine::printTradeHistory() const
@@ -410,4 +418,45 @@ bool MatchingEngine::canFullyFill(const Order& order) const
     }
 
     return false;
+}
+
+void MatchingEngine::checkStopOrders(long lastTradePrice)
+{
+    std::size_t i = 0;
+
+    while (i < stopOrders_.size())
+    {
+        const Order& order = stopOrders_[i];
+
+        bool trigger = false;
+
+        if (order.getSide() == Side::BUY)
+        {
+            trigger = lastTradePrice >= order.getStopPrice();
+        }
+        else
+        {
+            trigger = lastTradePrice <= order.getStopPrice();
+        }
+
+        if (trigger)
+        {
+            triggerStopOrder(i);
+        }
+        else
+        {
+            ++i;
+        }
+    }
+}
+
+void MatchingEngine::triggerStopOrder(std::size_t index)
+{
+    Order order = stopOrders_[index];
+
+    order.activateStop();
+
+    stopOrders_.erase(stopOrders_.begin() + index);
+
+    ProcessOrder(order);
 }

@@ -11,9 +11,7 @@ enum class OrderType //So that order can be distuingished as a limit or a market
     LIMIT,
     MARKET,
     IOC,
-    FOK,
-    ICEBERG,
-    STOP
+    FOK
 };
 class Order //the class contains both private(the information that we dont want to allow other classes to change) and public(information that need to be accessed by other classes) information
 {
@@ -32,7 +30,17 @@ private:
     // True if this is an iceberg order.
     bool iceberg;
 
+    // True if this is a stop order.
+    bool stopOrder;
+
+    // Trigger price.
+    long stopPrice;
+
+    // After triggering, should it become a market order?
+     bool stopMarket;
+
     long priceTicks; //1 price_ is 1 cent, so now we dont have to worry about floating decimals, only dealing with long ints
+    
     OrderType orderType;
 
 public:
@@ -49,6 +57,13 @@ public:
       OrderType orderType,
       int peakSize);   
 
+    Order(int id,
+        Side side,
+        int quantity,
+        long triggerPrice,
+        bool marketAfterTrigger,
+        long limitPrice = 0);
+
     int getId() const;
     Side getSide() const;
     int getQuantity() const;
@@ -64,6 +79,12 @@ public:
     void refreshVisible();
     bool refreshIfNeeded();
     void initializeVisibleSlice();
+
+    bool isStopOrder() const;
+    long getStopPrice() const;
+    bool isStopMarket() const;
+
+    void activateStop();
 };
 
 #endif
