@@ -15,7 +15,7 @@ TEST_CASE("Adding one order")
 {
     PriceLevel level(25000);
 
-    Order order(1, Side::BUY, 100, 25000);
+    Order order(1, 1, Side::BUY, 100, 25000);
 
     level.addOrder(order);
 
@@ -29,8 +29,8 @@ TEST_CASE("FIFO order is maintained")
 {
     PriceLevel level(25000);
 
-    level.addOrder(Order(1, Side::BUY, 100, 25000));
-    level.addOrder(Order(2, Side::BUY, 50, 25000));
+    level.addOrder(Order(1, 1, Side::BUY, 100, 25000));
+    level.addOrder(Order(2, 2, Side::BUY, 50, 25000));
 
     REQUIRE(level.frontOrder().getId() == 1);
 
@@ -43,9 +43,9 @@ TEST_CASE("Total quantity is summed correctly")
 {
     PriceLevel level(25000);
 
-    level.addOrder(Order(1, Side::BUY, 100, 25000));
-    level.addOrder(Order(2, Side::BUY, 50, 25000));
-    level.addOrder(Order(3, Side::BUY, 25, 25000));
+    level.addOrder(Order(1, 1, Side::BUY, 100, 25000));
+    level.addOrder(Order(2, 2, Side::BUY, 50, 25000));
+    level.addOrder(Order(3, 3, Side::BUY, 25, 25000));
 
     REQUIRE(level.totalQuantity() == 175);
 }

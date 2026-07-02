@@ -58,6 +58,12 @@ void MatchingEngine::matchBuyOrder(Order& incoming)
         // Oldest order at this price (FIFO).
         Order& resting = level.frontOrder();
 
+        if (incoming.getClientID() == resting.getClientID())
+        {
+            std::cout << "Self-match prevented (Cancel Newest policy). \n Incoming order cancelled.\n";
+            return;
+        }
+
         // Trade the smaller remaining quantity.
         int tradedQuantity = std::min(
             incoming.getRemainingQuantity(),
@@ -105,6 +111,12 @@ void MatchingEngine::matchSellOrder(Order& incoming)
 
         // Oldest order at that price (FIFO).
         Order& resting = level.frontOrder();
+
+        if (incoming.getClientID() == resting.getClientID())
+        {
+            std::cout << "Self-match prevented. Incoming order cancelled.\n";
+            return;
+        }
 
         // Execute the maximum possible trade.
         int tradedQuantity = std::min(
@@ -164,6 +176,7 @@ bool MatchingEngine::modifyOrder(int orderID,
     // the same ID, side, and order type.
     Order modifiedOrder(
         orderID,
+        order->getClientID(),
         order->getSide(),
         newQuantity,
         newPrice,

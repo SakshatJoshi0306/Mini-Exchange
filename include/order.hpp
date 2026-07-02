@@ -17,6 +17,9 @@ class Order //the class contains both private(the information that we dont want 
 {
 private:
     int id;
+
+    int clientID;
+
     Side side;
     // Remaining quantity (visible + hidden).
     int quantity;
@@ -45,12 +48,14 @@ private:
 
 public:
    Order(int id,
+      int clientID,
       Side side,
       int quantity,
       long priceTicks,
       OrderType orderType = OrderType::LIMIT); //Called a Constructor: when i crate an object i dont need to call anything, i can directly use the constructor type Order
 
    Order(int id,
+      int clientID,
       Side side,
       int quantity,
       long priceTicks,
@@ -58,6 +63,7 @@ public:
       int peakSize);   
 
     Order(int id,
+        int clientID,
         Side side,
         int quantity,
         long triggerPrice,
@@ -65,6 +71,7 @@ public:
         long limitPrice = 0);
 
     int getId() const;
+    int getClientID() const;
     Side getSide() const;
     int getQuantity() const;
     long getPriceTicks() const; // all 4 functions are getter functions, simply returns specific information of an Order type object

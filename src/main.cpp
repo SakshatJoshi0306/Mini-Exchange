@@ -13,9 +13,9 @@ int main()
         std::string sideInput;
         std::string typeInput;
 
-       std::cout << "\nBUY / SELL / MODIFY / CANCEL / EXIT : ";
+        std::cout << "\nBUY / SELL / MODIFY / CANCEL / EXIT : ";
         std::cin >> sideInput;
-
+        
         if (sideInput == "CANCEL")
         {
             int orderID;
@@ -65,6 +65,11 @@ int main()
         int quantity;
         std::cout << "Quantity : ";
         std::cin >> quantity;
+
+        int clientID;
+
+        std::cout << "Client ID : ";
+        std::cin >> clientID;
 
         // ---------------- Determine Side ----------------
 
@@ -134,6 +139,7 @@ int main()
         }
         Order order(
             0,
+            0,
             Side::BUY,
             0,
             0,
@@ -150,7 +156,7 @@ int main()
 
             if (stopMarket)
             {
-                order = Order(orderID++, side, quantity,triggerPrice,true);
+                order = Order(orderID++, clientID, side, quantity,triggerPrice,true);
             }
             else
             {
@@ -159,12 +165,12 @@ int main()
                 std::cout << "Limit Price : ";
                 std::cin >> limitPrice;
 
-                order = Order(orderID++, side, quantity, triggerPrice, false, limitPrice);
+                order = Order(orderID++, clientID, side, quantity, triggerPrice, false, limitPrice);
             }
         }
         else if (type == OrderType::MARKET)
         {
-            order = Order( orderID++, side, quantity, 0, type);
+            order = Order( orderID++, clientID, side, quantity, 0, type);
         }
         else
         {
@@ -179,11 +185,11 @@ int main()
                 std::cout << "Peak Size : ";
                 std::cin >> peak;
 
-                order = Order(orderID++, side, quantity, price, type, peak);
+                order = Order(orderID++, clientID, side, quantity, price, type, peak);
             }
             else
             {
-                order = Order(orderID++, side, quantity, price, type);
+                order = Order(orderID++, clientID, side, quantity, price, type);
             }
         }
 

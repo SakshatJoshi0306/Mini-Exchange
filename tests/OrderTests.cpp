@@ -4,7 +4,7 @@
 
 TEST_CASE("Order constructor stores values correctly")
 {
-    Order order(1, Side::BUY, 100, 25000);
+    Order order(1, 1, Side::BUY, 100, 25000);
 
     REQUIRE(order.getId() == 1);
     REQUIRE(order.getSide() == Side::BUY);

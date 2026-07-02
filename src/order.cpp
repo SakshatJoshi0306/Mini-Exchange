@@ -4,12 +4,14 @@
 //Initialising constructor for the normal case -> lmit/market
 Order::Order(
     int id,
+    int clientID,
     Side side,
     int quantity,
     long priceTicks,
     OrderType orderType)
     :
     id(id),
+    clientID(clientID),
     side(side),
     quantity(quantity),
     visibleQuantity(quantity),
@@ -26,6 +28,7 @@ Order::Order(
 //Initialising constructor for the iceberg orders
 Order::Order(
     int id,
+    int clientID,
     Side side,
     int quantity,
     long priceTicks,
@@ -33,6 +36,7 @@ Order::Order(
     int peakSize)
     :
     id(id),
+    clientID(clientID),
     side(side),
     quantity(quantity),
     visibleQuantity(std::min(quantity, peakSize)),
@@ -49,6 +53,7 @@ Order::Order(
 //initialising constructor for stop orders -> ordertype after trigger price reaches is already decided in the initialisation
 Order::Order(
     int id,
+    int clientID,
     Side side,
     int quantity,
     long triggerPrice,
@@ -56,6 +61,7 @@ Order::Order(
     long limitPrice)
     :
     id(id),
+    clientID(clientID),
     side(side),
     quantity(quantity),
     visibleQuantity(quantity),
@@ -75,6 +81,11 @@ Order::Order(
 int Order::getId() const
 {
     return id;
+}
+
+int Order::getClientID() const
+{
+    return clientID;
 }
 
 Side Order::getSide() const

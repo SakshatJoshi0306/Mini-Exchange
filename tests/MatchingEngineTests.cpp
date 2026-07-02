@@ -7,7 +7,7 @@ TEST_CASE("Buy order enters empty book")
     MatchingEngine engine;
 
     engine.ProcessOrder(
-        Order(1, Side::BUY, 100, 25000)
+        Order(1, 1, Side::BUY, 100, 25000)
     );
 
     REQUIRE(engine.getOrderBook().hasBids());
@@ -17,11 +17,11 @@ TEST_CASE("Buy order below best ask becomes resting order")
     MatchingEngine engine;
 
     engine.ProcessOrder(
-        Order(1, Side::SELL, 100, 25010)
+        Order(1, 1, Side::SELL, 100, 25010)
     );
 
     engine.ProcessOrder(
-        Order(2, Side::BUY, 100, 25000)
+        Order(2, 2, Side::BUY, 100, 25000)
     );
 
     // Prices do not cross.
@@ -34,11 +34,11 @@ TEST_CASE("Buy order trades with best ask")
     MatchingEngine engine;
 
     engine.ProcessOrder(
-        Order(1, Side::SELL, 100, 25000)
+        Order(1, 1, Side::SELL, 100, 25000)
     );
 
     engine.ProcessOrder(
-        Order(2, Side::BUY, 100, 25000)
+        Order(2, 2,Side::BUY, 100, 25000)
     );
 
     // The sell order should be completely filled,
